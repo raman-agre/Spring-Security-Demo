@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,6 +22,7 @@ public class SecurityConfig {
                 .requestMatchers("/public").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .requestMatchers("/user").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/dev").hasRole("DEV")
                 .anyRequest().authenticated()
         )
                 .formLogin(Customizer.withDefaults());
@@ -29,9 +31,10 @@ public class SecurityConfig {
 
     @Bean
     UserDetailsService userDetailsService(){
-        UserDetails user = User.withUsername("ramanna")
+        UserDetails user = User.withUsername("ram")
                 .password("{noop}1234")
                 .roles("USER")
+                .roles("DEV")
                 .build();
 
         UserDetails admin = User.withUsername("admin")
@@ -39,7 +42,17 @@ public class SecurityConfig {
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(user, admin);
+        UserDetails dev = User.withUsername("dev")
+                .password("{noop}dev123")
+                .roles("DEV")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, admin, dev);
     }
 
+    //to exclude any url from Spring Security. No security filters, no authentication/authorization, no security context
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer(){
+        return web -> web.ignoring().requestMatchers("/authentication");
+    }
 }
