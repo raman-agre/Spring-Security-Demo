@@ -3,6 +3,7 @@ package spring_security_demo.controller;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,6 +62,21 @@ public class DemoController {
   }
 }
 //         */
+    }
+
+    @GetMapping("/profile/read")
+    public String readProfile(){
+        return "Profile read!";
+    }
+
+    @PostMapping("/profile/write")
+    public String writeProfile(){
+        return "Profile updated!";
+    }
+
+    @PostMapping("/profile/delete")
+    public String deleteProfile(){
+        return "Profile deleted!";
     }
 //
 //    @GetMapping("/principal")
